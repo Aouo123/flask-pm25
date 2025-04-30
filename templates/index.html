@@ -2,20 +2,45 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-w">
-
-    <title>
-        
-    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>首頁</title>
     <style>
         body{
             text-align: center;
-            background-color: rgb(162, 234, 244);
+            background-color: rgb(255, 255, 255);
+        }
+
+    
+        table{
+            width: 80%;
+            margin: 0 auto;
+        }
+
+        th{
+            background: wheat;
         }
     </style>
 </head>
 <body>
-    <h1>{{name}}歡迎登入</h1>
-    <p>目前時間:{{now}}</p>
+    <h1>細懸浮微粒資料（PM2.5）</h1>
+    <a href="="/update-db">更新資料庫</a>
+    <table border="1">
+        <thead>
+            <tr>
+                {% for col in columns %}
+                <th>{{col}}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in datas %}
+            <tr>
+                {% for data in row %}
+                <td>{{data}}</td>
+                {% endfor %}
+             </tr>
+            {% endfor %}
+        </tbody>
+    </table>  
 </body>
 </html>
