@@ -7,6 +7,16 @@ import json
 
 app = Flask(__name__)
 
+@app.route("/filter", methods=["GET"])
+def filter_data():
+    county = request.form.get("county", "ALL")
+    columns, datas = get_pm25_data_from_mysql()
+    df = pd.DataFrame(datas, columns=columns)
+    df1 = df.groupby("county").get_group(county).groupby("site")["pm25"].mean()
+    print(df1)
+    return {"county": county}
+
+
 @app.route("/update_db")
 def updaye_pm25_db():
     count, message = update_db()
@@ -21,7 +31,20 @@ def updaye_pm25_db():
 @app.route("/")
 def index():
     columns, datas = get_pm25_data_from_mysql()
-    return render_template("index.html", columns=columns, datas=datas)
+    df = pd.DataFrame(datas, columns=columns)
+    counties = sorted(df["county"].unique().tolist())
+    print(counties)
+    
+    columns, datas = get_pm25_data_from_mysql()
+    df = pd.DataFrame(datas, columns=columns)
+
+    county = request.args.get("county", "ALL")
+    if county != "ALL":
+        df1 = df.groupby("county").get_group(county)
+        columns = df1.columns.tolist()
+        datas = df1.values.tolist()
+        print(df1)
+    return render_template("index.html", columns=columns, datas=datas, counties=counties)
 
 
 @app.route("/books")
